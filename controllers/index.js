@@ -1,23 +1,29 @@
 'use strict';
 
 
-var IndexModel = require('../models/index');
-var flux = require('flux');
-
+// var MovieModel = require('../models/movie');
+var http = require('http');
 
 module.exports = function (app) {
-
-    var model = new IndexModel();
-
+	var model = {};
     app.get('/', function (req, res) {
-		flux.acquire('ubuntu 11.04', function(err) {
-		    if (err) {
-		        console.log('there was an error: ' + err.message);
-		    }
-		    else {
-		        console.log('ubuntu torrent downloaded!');
-		    }
+    	var url = 'http://yts.re/api/list.json';
+    	http.get(url, function(res) {
+		    var body = '';
+
+		    res.on('data', function(chunk) {
+		        body += chunk;
+		    });
+
+		    res.on('end', function() {
+		        var jsonResponse = JSON.parse(body)
+		        model = jsonResponse;
+		        console.log(model.MovieList[0]);
+		    });
+		}).on('error', function(e) {
+		      console.log("Got error: ", e);
 		});
+		res.render('index', model);
     });
 
 };
