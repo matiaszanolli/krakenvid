@@ -3,6 +3,6 @@
 {<body}
     <h1>{MovieCount} Peliculas</h1>
     {#MovieList}
-    <a href="{TorrentUrl}"><img src="{CoverImage}" /></a>
+    <a href="/download/{MovieID}"><img src="{CoverImage}" /></a>
     {/MovieList}
 {/body}
