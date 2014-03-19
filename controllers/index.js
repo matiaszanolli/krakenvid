@@ -3,6 +3,7 @@
 
 // var MovieModel = require('../models/movie');
 var http = require('http');
+var fs = require('fs');
 var movie = require('models/movie');
 console.log(movie);
 module.exports = function (app) {
@@ -39,7 +40,19 @@ module.exports = function (app) {
 
 			    res.on('end', function() {
 			        var jsonResponse = JSON.parse(body)
-			        console.log(jsonResponse);
+			        var filename = 'temp.torrent';
+					var file = fs.createWriteStream(filename);
+					var request = http.get(jsonResponse.TorrentUrl, function(response) {
+					  response.pipe(file);
+					});
+					console.log(jsonResponse.TorrentUrl);
+			        var peerflix = require('peerflix');
+			        var fileRead = fs.createReadStream(filename);
+					var engine = peerflix(fileRead, {
+					  	connections: 100,
+					  	path: '/tmp/my-folder'
+					});
+
 			    });
 			}).on('error', function(e) {
 			      console.log("Error loading movie data: ", e);
